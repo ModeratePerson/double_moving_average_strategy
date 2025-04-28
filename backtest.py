@@ -168,6 +168,41 @@ if __name__ == "__main__":
     # 示例布尔条件：收盘价等于3748.00
     condition_func = lambda klines: klines["close"] == 3748.00
 
+    # 示例布尔条件：检测金叉（短期均线从下方穿过长期均线）
+    def golden_cross_condition(klines):
+        # 计算短期和长期均线
+        short_avg = ma(klines["close"], 12)  # 短周期均线
+        long_avg = ma(klines["close"], 26)  # 长周期均线
+
+        # 创建一个与klines长度相同的布尔Series，初始值全为False
+        result = pd.Series(False, index=klines.index)
+
+        # 检查是否有足够的数据来判断金叉
+        if len(short_avg) >= 2 and len(long_avg) >= 2:
+            # 对于最新的数据点，检查是否出现金叉
+            result.iloc[-1] = (short_avg.iloc[-2] < long_avg.iloc[-2] and
+                               short_avg.iloc[-1] > long_avg.iloc[-1])
+
+        return result
+
+    # 示例布尔条件：检测死叉叉
+    def death_cross_condition(klines):
+        # 计算短期和长期均线
+        short_avg = ma(klines["close"], 12)  # 短周期均线
+        long_avg = ma(klines["close"], 26)  # 长周期均线
+
+        # 创建一个与klines长度相同的布尔Series，初始值全为False
+        result = pd.Series(False, index=klines.index)
+
+        # 检查是否有足够的数据来判断死叉
+        if len(short_avg) >= 2 and len(long_avg) >= 2:
+            # 对于最新的数据点，检查是否出现死叉
+            result.iloc[-1] = (short_avg.iloc[-2] > long_avg.iloc[-2] and
+                               short_avg.iloc[-1] < long_avg.iloc[-1])
+
+        return result
+
+
     # 运行模块并获取结果
     result_df = BARSLAST(symbol="DCE.m2401", condition=condition_func)
 
