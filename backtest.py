@@ -185,7 +185,7 @@ if __name__ == "__main__":
 
         return result
 
-    # 示例布尔条件：检测死叉叉
+    # 示例布尔条件：检测死叉
     def death_cross_condition(klines):
         # 计算短期和长期均线
         short_avg = ma(klines["close"], 12)  # 短周期均线
